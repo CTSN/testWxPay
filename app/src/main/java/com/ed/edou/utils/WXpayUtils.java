@@ -21,13 +21,11 @@ import java.util.Random;
 public class WXpayUtils {
 
     private static IWXAPI iwxapi;
-    private static PayReq req;
 
     public static IWXAPI getWXAPI(){
         if (iwxapi == null){
             //通过WXAPIFactory创建IWAPI实例
             iwxapi = WXAPIFactory.createWXAPI(MyApplication.getContext(), null);
-            req = new PayReq();
             //将应用的appid注册到微信
             iwxapi.registerApp(Constants.APP_ID);
         }
@@ -79,7 +77,7 @@ public class WXpayUtils {
     }
 
     //生成支付参数
-    private static void genPayReq(String prepayid) {
+    private static void genPayReq(String prepayid, PayReq req) {
         req.appId = Constants.APP_ID;
         req.partnerId = Constants.MCH_ID;
         req.prepayId = prepayid;
@@ -100,7 +98,8 @@ public class WXpayUtils {
 
     public static void Pay(String prepayid){
         if (judgeCanGo()){
-            genPayReq(prepayid);
+            PayReq req = new PayReq();
+            genPayReq(prepayid,req);
             iwxapi.registerApp(Constants.APP_ID);
             iwxapi.sendReq(req);
         }
